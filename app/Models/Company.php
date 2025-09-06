@@ -75,11 +75,4 @@ class Company extends Model
     {
         return $this->morphMany(Activity::class, 'related_to');
     }
-}space App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class Company extends Model
-{
-    //
 }

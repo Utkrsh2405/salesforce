@@ -68,11 +68,4 @@ class Contact extends Model
     {
         return "{$this->first_name} {$this->last_name}";
     }
-}space App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class Contact extends Model
-{
-    //
 }

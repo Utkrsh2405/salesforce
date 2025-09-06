@@ -110,11 +110,4 @@ class Lead extends Model
 
         return $deal;
     }
-}space App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class Lead extends Model
-{
-    //
 }

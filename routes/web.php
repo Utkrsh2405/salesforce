@@ -25,16 +25,20 @@ Route::middleware(['auth'])->group(function () {
 
     // Leads
     Route::resource('leads', LeadController::class);
+    Route::get('leads/{lead}/convert', [LeadController::class, 'showConvertForm'])->name('leads.convert.form');
     Route::post('leads/{lead}/convert', [LeadController::class, 'convert'])->name('leads.convert');
 
     // Deals
     Route::resource('deals', DealController::class);
+    Route::get('deals-pipeline', [DealController::class, 'pipeline'])->name('deals.pipeline');
     Route::post('deals/{deal}/won', [DealController::class, 'markAsWon'])->name('deals.won');
     Route::post('deals/{deal}/lost', [DealController::class, 'markAsLost'])->name('deals.lost');
+    Route::patch('deals/{deal}/stage', [DealController::class, 'updateStage'])->name('deals.update-stage');
 
     // Activities
     Route::resource('activities', ActivityController::class);
     Route::post('activities/{activity}/complete', [ActivityController::class, 'complete'])->name('activities.complete');
+    Route::get('activities-calendar', [ActivityController::class, 'calendar'])->name('activities.calendar');
 
     // Email Campaigns
     Route::resource('email-campaigns', EmailCampaignController::class);
@@ -44,10 +48,22 @@ Route::middleware(['auth'])->group(function () {
     // Products
     Route::resource('products', ProductController::class);
 
+    // Quotes
+    Route::resource('quotes', QuoteController::class);
+    Route::get('quotes/{quote}/pdf', [QuoteController::class, 'generatePdf'])->name('quotes.pdf');
+    Route::post('quotes/{quote}/send', [QuoteController::class, 'send'])->name('quotes.send');
+    Route::post('quotes/{quote}/accept', [QuoteController::class, 'accept'])->name('quotes.accept');
+    Route::post('quotes/{quote}/reject', [QuoteController::class, 'reject'])->name('quotes.reject');
+    Route::post('quotes/{quote}/duplicate', [QuoteController::class, 'duplicate'])->name('quotes.duplicate');
+
     // API Routes for Select2 and other AJAX requests
     Route::prefix('api')->name('api.')->group(function () {
         Route::get('companies/search', [CompanyController::class, 'search'])->name('companies.search');
         Route::get('contacts/search', [ContactController::class, 'search'])->name('contacts.search');
-        Route::get('products/search', [ProductController::class, 'search'])->name('products.search');
+        Route::get('products/search', [ProductController::class, 'getProductsJson'])->name('products.search');
+        Route::get('users/search', function() {
+            $users = \App\Models\User::select('id', 'name as text')->get();
+            return response()->json($users);
+        })->name('users.search');
     });
 });

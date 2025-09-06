@@ -54,11 +54,4 @@ class EmailCampaign extends Model
     {
         return $this->belongsTo(User::class, 'created_by_user_id');
     }
-}space App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class EmailCampaign extends Model
-{
-    //
 }
