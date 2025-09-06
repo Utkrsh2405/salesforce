@@ -1,0 +1,65 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crm-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - crm-network
+
+  db:
+    image: mysql:8.0
+    container_name: crm-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: crm_db
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_PASSWORD: password
+      MYSQL_USER: crm_user
+    volumes:
+      - dbdata:/var/lib/mysql/
+    networks:
+      - crm-network
+
+  nginx:
+    image: nginx:1.20-alpine
+    container_name: crm-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d/
+    networks:
+      - crm-network
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: crm-redis
+    restart: unless-stopped
+    networks:
+      - crm-network
+
+  elasticsearch:
+    image: elasticsearch:8.7.0
+    container_name: crm-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - crm-network
+
+networks:
+  crm-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+  esdata:
