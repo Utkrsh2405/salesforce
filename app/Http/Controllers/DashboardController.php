@@ -22,6 +22,8 @@ class DashboardController extends Controller
         $topDeals = $this->getTopDeals();
         $leadConversionData = $this->getLeadConversionData();
 
+        dd($chartData); // Debugging statement to inspect $chartData structure
+
         return view('dashboard', compact(
             'stats', 
             'chartData', 
@@ -39,10 +41,10 @@ class DashboardController extends Controller
 
         return [
             'total_leads' => Lead::count(),
-            'new_leads_this_month' => Lead::whereRaw("DATE_FORMAT(created_at, '%Y-%m') = ?", [$currentMonth])->count(),
+            'new_leads_this_month' => Lead::whereRaw("strftime('%Y-%m', created_at) = ?", [$currentMonth])->count(),
             'leads_growth' => $this->calculateGrowth(
-                Lead::whereRaw("DATE_FORMAT(created_at, '%Y-%m') = ?", [$lastMonth])->count(),
-                Lead::whereRaw("DATE_FORMAT(created_at, '%Y-%m') = ?", [$currentMonth])->count()
+                Lead::whereRaw("strftime('%Y-%m', created_at) = ?", [$lastMonth])->count(),
+                Lead::whereRaw("strftime('%Y-%m', created_at) = ?", [$currentMonth])->count()
             ),
             
             'total_deals' => Deal::count(),
@@ -51,7 +53,7 @@ class DashboardController extends Controller
             'won_deals_value' => Deal::where('is_won', true)->sum('deal_value'),
             
             'total_contacts' => Contact::count(),
-            'new_contacts_this_month' => Contact::whereRaw("DATE_FORMAT(created_at, '%Y-%m') = ?", [$currentMonth])->count(),
+            'new_contacts_this_month' => Contact::whereRaw("strftime('%Y-%m', created_at) = ?", [$currentMonth])->count(),
             
             'total_companies' => Company::count(),
             'client_companies' => Company::where('is_client', true)->count(),
@@ -80,6 +82,9 @@ class DashboardController extends Controller
             $salesData[] = Deal::whereDate('created_at', $date)->sum('deal_value');
             $leadData[] = Lead::whereDate('created_at', $date)->count();
         }
+
+        // Ensure labels are always defined
+        $labels = $labels ?? [];
 
         // Deal stages distribution
         $dealStages = DB::table('deal_stages')

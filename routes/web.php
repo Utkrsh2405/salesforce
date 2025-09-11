@@ -8,6 +8,7 @@ use App\Http\Controllers\DealController;
 use App\Http\Controllers\EmailCampaignController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\QuoteController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 

@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const activityChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: {!! json_encode($chartData['labels']) !!},
+            labels: {!! json_encode($chartData['sales_trend']['labels']) !!},
             datasets: [{
                 label: 'Activities',
                 data: {!! json_encode($chartData['data']) !!},
